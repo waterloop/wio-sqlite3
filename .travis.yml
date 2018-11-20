@@ -1,0 +1,136 @@
+# Copyright (c) 2012-2018 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+
+# request for Ubuntu 14.04 Trusty VM
+sudo: true
+dist: trusty
+
+cache:
+  apt: true
+  brew: true
+  npm: true
+
+# NOTE: no language, so that we can set CXX and CC env vars as required
+#language: cpp
+
+matrix:
+  include:
+    # gcc default (4.8)
+    - compiler: gcc
+      env:
+        - CC=gcc
+        - CXX=g++
+    # gcc 4.9 std=default
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+      env:
+        - CC=gcc-4.9
+        - CXX=g++-4.9
+    # gcc 5 std=c++03
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - CC=gcc-5
+        - CXX=g++-5
+    # gcc 5 std=c++11
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - CC=gcc-5
+        - CXX=g++-5
+    # gcc 5 default
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - CC=gcc-5
+        - CXX=g++-5
+    # gcc 5 std=c++11
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - CC=gcc-5
+        - CXX=g++-5
+    # gcc 5 std=c++14
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+      env:
+        - CC=gcc-5
+        - CXX=g++-5
+    # gcc 6 std=c++14
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+      env:
+        - CC=gcc-6
+        - CXX=g++-6
+    # gcc 7 std=c++14
+    - compiler: gcc
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - CC=gcc-7
+        - CXX=g++-7
+    # clang default
+    - compiler: clang
+      env:
+        - CC=clang
+        - CXX=clang++
+    # os x
+    - compiler: clang
+      os: osx
+      addons:
+      env:
+        - CC=clang
+        - CXX=clang
+        - CXXFLAGS=-lstdc++
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; 
+    then brew tap osx-cross/avr; brew tap wio/wio; brew install wio;
+    else sudo apt-get update -qq ; curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - ; sudo apt-get install -y nodejs; sudo npm install -g wio --unsafe-perm; 
+    fi
+
+# scripts to run before build
+before_script:
+  - wio install
+
+# build examples, and run tests (ie make & make test)
+script:
+  - wio build -all
