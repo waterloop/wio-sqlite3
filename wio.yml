@@ -17,8 +17,8 @@ project:
     wio_version: 0.6.2
     default_target: tests
     linker_flags:
-    - $linux(${CMAKE_DL_LIBS} -pthread)
-    - $darwin(${CMAKE_DL_LIBS} -pthread)
+    - $linux(${CMAKE_DL_LIBS} pthread)
+    - $darwin(${CMAKE_DL_LIBS} pthread)
     - $windows(ssp)
 
 targets:
